@@ -13,7 +13,7 @@ mongoose.connect('mongodb://heroku_zn69xqhf:pplo9p5dcjqn6i3l0cdeiov71v@ds259250.
 //'mongodb://heroku_r9hn0jzn:echn9ckdip4644i79p2j4blun8@ds129796.mlab.com:29796/heroku_r9hn0jzn');
 //var db = mongoose.connection;
 
-User = require('./api/models/userModel'),
+//User = require('./api/Models/UserModel'),
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
