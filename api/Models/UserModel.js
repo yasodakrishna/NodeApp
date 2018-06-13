@@ -16,7 +16,7 @@ var User = new mongoose.Schema({
     },
     UserType: {
         type: String,
-        default: ''
+        default: 'UserType is required'
     },
 });
 
