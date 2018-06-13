@@ -1,8 +1,7 @@
 var express = require('express'),
     app = express(),
     port = process.env.PORT || 3000,
-    mongoose = require('mongoose'),
-     
+    mongoose = require('mongoose'),     
 
     bodyParser = require('body-parser');
 
@@ -24,9 +23,18 @@ app.use(function (req, res, next) {
 
 // Set up a URL route
 app.get("/", function (req, res) {
-    res.send("Heroku Demo!");
+    //res.send("Heroku Demo!");
+    mongoose.connect(url, function(err, db) {
+        if (err) throw err;
+        console.log("Connection established");
+        var dbo = db.db("property");
+        dbo.collection("CLC_User").findOne({}, function(err, result) {
+        if (err) throw err;
+        console.log(result);
+        db.close();
+        });
+        });
 });
-
 
 app.listen(port);
 
