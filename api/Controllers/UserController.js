@@ -8,6 +8,7 @@ exports.getUsers = function (req, res) {
       if (err)
         res.send(err);
       else {
+        console.log(_UsersData);
         res.json(_UsersData);
       }
     });
