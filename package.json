@@ -11,7 +11,9 @@
   "dependencies": {
     "body-parser": "^1.18.1",
     "express": "^4.15.4",
-    "mongoose": "^4.11.11",
+    "http": "0.0.0",
+    "mongodb": "^3.0.10",
+    "mongoose": "^4.10.8",
     "multer": "1.1.0"
   }
 }
