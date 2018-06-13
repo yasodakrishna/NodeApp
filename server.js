@@ -7,7 +7,7 @@ var express = require('express'),
 
 mongoose.Promise = global.Promise;
 //mongoose.connect('mongodb://192.168.100.23/RMSDB');
-mongoose.connect('mongodb://heroku_zn69xqhf:pplo9p5dcjqn6i3l0cdeiov71v@ds259250.mlab.com:59250/heroku_zn69xqhf');
+var url = mongoose.connect('mongodb://heroku_zn69xqhf:pplo9p5dcjqn6i3l0cdeiov71v@ds259250.mlab.com:59250/heroku_zn69xqhf');
 //'mongodb://heroku_r9hn0jzn:echn9ckdip4644i79p2j4blun8@ds129796.mlab.com:29796/heroku_r9hn0jzn');
 
 app.use(bodyParser.urlencoded({ extended: true }));
