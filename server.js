@@ -31,8 +31,8 @@ app.get("/", function (req, res) {
     res.send("Heroku Demo!");    
 });
 
-var routes = require('./api/routers/routers');
-routes(app);
+//var routes = require('./api/routers/routers');
+//routes(app);
 
 app.listen(port);
 
