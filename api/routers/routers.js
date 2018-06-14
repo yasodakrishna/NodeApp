@@ -14,7 +14,7 @@ module.exports = function (app) {
   .post(userCtrl.signUp);
 
    //user validate Routes
-   app.route('/uservalidate')
+   app.route('/login')
   .post(userCtrl.UserValidate);
 
    //update user Routes
