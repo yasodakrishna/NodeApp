@@ -8,5 +8,5 @@ module.exports = function (app) {
     .get(userCtrl.getUsers);
  //user signup Routes
    app.route('/singup')
-  .get(userCtrl.signUp);
+  .post(userCtrl.signUp);
 };

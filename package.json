@@ -13,6 +13,7 @@
     "express": "^4.15.4",
     "http": "0.0.0",
     "mongodb": "^3.0.10",
+    "mongodb-autoincrement": "^1.0.1",
     "mongoose": "^4.10.8",
     "multer": "1.1.0"
   }
