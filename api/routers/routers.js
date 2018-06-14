@@ -10,7 +10,7 @@ module.exports = function (app) {
     .get(userCtrl.getUsers);
 
  //user signup Routes
-   app.route('/singup')
+   app.route('/signup')
   .post(userCtrl.signUp);
 
    //user validate Routes
