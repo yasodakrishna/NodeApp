@@ -11,6 +11,8 @@
   "dependencies": {
     "body-parser": "^1.18.1",
     "express": "^4.15.4",
+    "formidable": "^1.2.1",
+    "fs": "0.0.1-security",
     "http": "0.0.0",
     "mongodb": "^3.0.10",
     "mongodb-autoincrement": "^1.0.1",
