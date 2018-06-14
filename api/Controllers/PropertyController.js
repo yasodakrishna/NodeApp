@@ -10,7 +10,7 @@ exports.CreateProperty = function(req, res){
     var input = req.body;      
             MongoClient.connect(url, function(err, db){ 
                 var dbo = db.db("heroku_zn69xqhf");
-                var collectionName="CLC_property";
+                var collectionName="CLC_Property";
                 autoIncrement.getNextSequence(dbo, collectionName,"PropertyId", function (err, autoIndex) {
                 var query = { 
                     PropertyId : autoIndex,
@@ -74,7 +74,7 @@ exports.UpdateProperty = function(req, res){
                     Floor_Type:input.Floor_Type,
                     Balconies:Number(input.Balconies),
                     Property_Description:input.PropertyDescription}};
-                dbo.collection("CLC_property").updateOne(Propertyidval,query, function(err, result) {
+                dbo.collection("CLC_Property").updateOne(Propertyidval,query, function(err, result) {
                     if (err) throw err;
                     console.log("1 document Updated");
                     res.json({status : 'success', message : 'OK', result : input});
@@ -89,7 +89,7 @@ exports.GetBookingProperty = function(req, res){
     MongoClient.connect(url, function(err, db){ 
           var dbo = db.db("heroku_zn69xqhf");
            var newValues = {UserID : input.UserID};
-          dbo.collection("CLC_property").find(newValues, function(err, res) {
+          dbo.collection("CLC_Property").find(newValues, function(err, res) {
             if (err) throw err;
             console.log("Got one record Successfully !!");
             db.close();
@@ -108,7 +108,7 @@ exports.GetProperty = function(req, res){
                 Property_Type : input.Property_Type,
                 BHKType: input.BHKType
             };
-          dbo.collection('CLC_property').find(newValues).toArray(function(err,result){
+          dbo.collection('CLC_Property').find(newValues).toArray(function(err,result){
             if (err) throw err;
             console.log(result.length);
             if(result.length == 1){
@@ -127,7 +127,7 @@ exports.GetSellingProperty = function(req, res){
     MongoClient.connect(url, function(err, db){ 
           var dbo = db.db("heroku_zn69xqhf");
            var newValues = {UserID: input.UserID};
-          dbo.collection('CLC_property').find(newValues).toArray(function(err,result){
+          dbo.collection('CLC_Property').find(newValues).toArray(function(err,result){
             if (err) throw err;
             console.log(result.length);
             if(result.length == 1){
@@ -154,7 +154,7 @@ exports.MakeFavoriteProperty = function(req, res){
             IsFavorite:input.IsFavorite
                 }
             };
-            dbo.collection("CLC_property").updateOne(oldvalues, newValues, function(err, res) {
+            dbo.collection("CLC_Property").updateOne(oldvalues, newValues, function(err, res) {
             if (err) throw err;
             console.log(input.IsFavorite);
             console.log("User Favorite Updated Successfully !!");
@@ -169,7 +169,7 @@ exports.GetFavoriteProperty = function(req, res){
     MongoClient.connect(url, function(err, db){ 
           var dbo = db.db("heroku_zn69xqhf");
            var newValues = {UserID: input.UserID,IsFavorite:input.IsFavorite};
-          dbo.collection('CLC_property').find(newValues).toArray(function(err,result){
+          dbo.collection('CLC_Property').find(newValues).toArray(function(err,result){
             if (err) throw err;
             console.log(result.length);
             if(result.length == 1){
