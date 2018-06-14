@@ -6,4 +6,7 @@ module.exports = function (app) {
   //user Routes
   app.route('/userCtrl')
     .get(userCtrl.getUsers);
+ //user signup Routes
+   app.route('/singup')
+  .get(userCtrl.signUp);
 };
