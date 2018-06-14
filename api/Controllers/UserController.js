@@ -25,6 +25,8 @@ exports.getUsers = function (req, res) {
   dbo.collection("CLC_User").findOne({}, function(err, result) {
     if (err) throw err;
     console.log(result.Email);
+    res.json({status : 'success', message : 'OK', result : result});
+    //res.json(result.Email);
     db.close();
   });  
 });
