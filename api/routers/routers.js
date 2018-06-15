@@ -61,8 +61,8 @@ module.exports = function (app) {
    //Cancel Appointment
    app.route('/cancelappointment')
    .post(appointmentControllerCtrl.CancelAppointment);   
-   
-   //Tracking
-   app.route('/tracking')
-   .post(TrackingControllerCtrl.Tracking);
+
+  //  //Tracking
+  //  app.route('/tracking')
+  //  .post(TrackingControllerCtrl.Tracking);
 };
