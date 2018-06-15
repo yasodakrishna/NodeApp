@@ -4,6 +4,7 @@ module.exports = function (app) {
   var userCtrl = require('../Controllers/UserController');  
   var propertyCtrl = require('../Controllers/PropertyController');  
   var appointmentControllerCtrl = require('../Controllers/AppointmentController'); 
+  var TrackingControllerCtrl = require('../Controllers/TrackingController'); 
   
   //user Routes
   app.route('/userCtrl')
@@ -59,5 +60,9 @@ module.exports = function (app) {
 
    //Cancel Appointment
    app.route('/cancelappointment')
-   .post(appointmentControllerCtrl.CancelAppointment);
+   .post(appointmentControllerCtrl.CancelAppointment);   
+   
+   //Tracking
+   app.route('/tracking')
+   .post(TrackingControllerCtrl.Tracking);
 };

@@ -11,14 +11,14 @@ exports.SechduleAppointment = function(req, res){
             MongoClient.connect(url, function(err, db){ 
                 var dbo = db.db("heroku_zn69xqhf");
                 var collectionName="CLC_Appointments";
-                autoIncrement.getNextSequence(dbo, collectionName,"AppointmentID", function (err, autoIndex) {
                 var query = { 
                     UserID :input.UserID,
                     PropertyID : input.PropertyID,
                     AssignedAgentID : input.AssignedAgentID,
-                    date : input.Date , 
-                    time : input.Time,                    
+                    Date : input.Date , 
+                    Time : input.Time,                    
                     AppointmentStatus : input.AppointmentStatus,
+                    AppointmentID : input.AppointmentID
                     
                 };
                 dbo.collection(collectionName).insertOne(query, function(err, result) {
@@ -28,7 +28,6 @@ exports.SechduleAppointment = function(req, res){
                     db.close();
                   });
                 })
-            });
         }
 
 //Accept Appointment

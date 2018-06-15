@@ -11,13 +11,15 @@ exports.CreateProperty = function(req, res){
             MongoClient.connect(url, function(err, db){ 
                 var dbo = db.db("heroku_zn69xqhf");
                 var collectionName="CLC_Property";
-                autoIncrement.getNextSequence(dbo, collectionName,"PropertyId", function (err, autoIndex) {
                 var query = { 
-                    PropertyId : autoIndex,
+                    PropertyId : input.PropertyId,
                     UserID:input.UserID,
                     Property_Type : input.Property_Type,
                     BHKType : input.BHKType,
                     Location: input.Location,
+                    Address : input.Address,
+                    Longitude :input.Longitude,
+                    Latitude :input.Latitude,
                     Zip: input.Zip,
                     Photos:input.Photos,
                     Price:input.Price,
@@ -43,7 +45,6 @@ exports.CreateProperty = function(req, res){
                     db.close();
                   });
                 });
-            });
         }
 
         //Update PropertyList
@@ -59,6 +60,9 @@ exports.UpdateProperty = function(req, res){
                     Property_Type : input.Property_Type,
                     BHKType : input.BHKType,
                     Location: input.Location,
+                    Address : input.Address,
+                    Longitude :input.Longitude,
+                    Latitude :input.Latitude,
                     Zip: input.Zip,
                     Photos:input.Photos,
                     Price:input.Price,
