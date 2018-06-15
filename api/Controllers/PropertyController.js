@@ -18,7 +18,7 @@ exports.CreateProperty = function(req, res){
                     Property_Type : input.Property_Type,
                     BHKType : input.BHKType,
                     Location: input.Location,
-                    Zip: Number(input.Zip),
+                    Zip: input.Zip,
                     Photos:input.Photos,
                     Price:input.Price,
                     Property_Status:input.Property_Status,
@@ -27,14 +27,15 @@ exports.CreateProperty = function(req, res){
                     ListedBy:input.ListedBy,
                     Aminities:input.Aminities,
                     Facilities:input.Facilities,
-                    Bathrooms:Number(input.Bathrooms),
+                    Bathrooms:input.Bathrooms,
                     Facing:input.Facing,
                     IsFavorite: input.IsFavorite,
-                    Parking:Number(input.Parking),
-                    BuildUp_Area:Number(input.BuildUp_Area),
+                    Parking:input.Parking,
+                    BuildUp_Area:input.BuildUp_Area,
                     Floor_Type:input.Floor_Type,
-                    Balconies:Number(input.Balconies),
-                    Property_Description:input.PropertyDescription};
+                    Balconies:input.Balconies,
+                    Property_Description:input.PropertyDescription,
+                    Address:input.Address};
                 dbo.collection(collectionName).insertOne(query, function(err, result) {
                     if (err) throw err;
                     console.log("1 document inserted");
@@ -58,22 +59,23 @@ exports.UpdateProperty = function(req, res){
                     Property_Type : input.Property_Type,
                     BHKType : input.BHKType,
                     Location: input.Location,
-                    Zip: Number(input.Zip),
+                    Zip: input.Zip,
                     Photos:input.Photos,
-                    Price:money.Price(input.Price),
+                    Price:input.Price,
                     Property_Status:input.Property_Status,
                     Possession:input.Possession,
                     Age_of_Property:input.Age_of_Property,
                     ListedBy:input.ListedBy,
                     Aminities:input.Aminities,
                     Facilities:input.Facilities,
-                    Bathrooms:Number(input.Bathrooms),
+                    Bathrooms:input.Bathrooms,
                     Facing:input.Facing,
-                    Parking:Number(input.Parking),
-                    BuildUp_Area:Number(input.BuildUp_Area),
+                    Parking:input.Parking,
+                    BuildUp_Area:input.BuildUp_Area,
                     Floor_Type:input.Floor_Type,
-                    Balconies:Number(input.Balconies),
-                    Property_Description:input.PropertyDescription}};
+                    Balconies:input.Balconies,
+                    Property_Description:input.PropertyDescription,
+                    Address:input.Address}};
                 dbo.collection("CLC_Property").updateOne(Propertyidval,query, function(err, result) {
                     if (err) throw err;
                     console.log("1 document Updated");
