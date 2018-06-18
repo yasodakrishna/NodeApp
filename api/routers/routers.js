@@ -67,8 +67,8 @@ module.exports = function (app) {
    //.post(TrackingControllerCtrl.Tracking);
    
      //TrackEndpoints
-     app.route('/trackendpoints')
-     .get(TrackingControllerCtrl.TrackEndpoints);   
+    //  app.route('/trackendpoints')
+    //  .get(TrackingControllerCtrl.TrackEndpoints);   
 
      app.route('/getallbookingproperty')
      .post(propertyCtrl.GetAllBookingProperty);
