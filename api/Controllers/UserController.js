@@ -20,73 +20,99 @@ exports.getUsers = function (req, res) {
   };
 
   // User Registration
-exports.signUp = function(req, res){
-  var input = req.body; 
-  console.log('input is:'); 
-  console.log(input);
-  
-          MongoClient.connect(url, function(err, db){ 
-              var dbo = db.db("heroku_zn69xqhf");
-              var collectionName="CLC_User";
-              autoIncrement.getNextSequence(dbo, collectionName,"UserID", function (err, autoIndex) {
-              var query = { 
-                  UserID:autoIndex,
-                  Email : input.Email ,
-                  Password : input.Password,
-                  UserType: input.UserType,
-                  UserProfileImage: input.UserProfileImage};
-              dbo.collection(collectionName).insertOne(query, function(err, result) {
-                  if (err) throw err;
-                  console.log("1 document inserted");
-                  res.json({status : 'success', message : 'OK', result : input});
-                  db.close();
-                });
-              });
-          });
-      }
-
-      // Validate User && input.Password==result.Password 
-exports.UserValidate=function(req, res){
-    var input = req.body;
-
+  exports.signUp = function(req, res){
+    var input = req.body; 
+    console.log('input is:'); 
+    console.log(input);
+    signupValidation(input, function(errMessage){
+      console.log(errMessage);
+      if(errMessage != ""){
+          console.log(errMessage);
+          res.send(JSON.stringify({status:'error', message:errMessage, result:null}));
+    }else{
             MongoClient.connect(url, function(err, db){ 
                 var dbo = db.db("heroku_zn69xqhf");
-                var query = { Email : input.Email , Password : input.Password, UserType:input.UserType };
-                dbo.collection('CLC_User').find(query).toArray(function(err,result){
-                    console.log(result.Email);
+                var collectionName="CLC_User";
+                autoIncrement.getNextSequence(dbo, collectionName,"UserID", function (err, autoIndex) {
+                var query = { 
+                    UserID:autoIndex,
+                    Email : input.Email ,
+                    Password : input.Password,
+                    UserType: input.UserType,
+                    UserProfileImage: input.UserProfileImage};
+                dbo.collection(collectionName).insertOne(query, function(err, result) {
                     if (err) throw err;
-                    console.log(result.length);
-                    if(result.length == 1){
-                        res.json({status : 'success', message : 'OK', result : result});
-                    }
-                    else{
-                        res.json({status : 'error', message : 'Please check the credentials', result : null});
-                    }
-                })
-            })
+                    console.log("1 document inserted");
+                    res.json({status : 'success', message : 'OK', result : input});
+                    db.close();
+                  });
+                });
+              });
+              }
+          })
         }
 
-        // Update User Details
-exports.UpdateUserDetails = function(req, res){
-  var input = req.body;
+      // Validate User && input.Password==result.Password 
+      exports.UserValidate=function(req, res){
+        var input = req.body;
+        signupValidation(input, function(errMessage){
+            if(errMessage != ""){
+                console.log(errMessage);
+                res.send(JSON.stringify({status:'error', message:errMessage, result:null}));
+            }else{
+        
+                MongoClient.connect(url, function(err, db){ 
+                    var dbo = db.db("heroku_zn69xqhf");
+                    var query = { 
+                        Email : input.Email , 
+                        Password : input.Password,
+                         UserType:input.UserType 
+                        };
+                    dbo.collection('CLC_User').find(query).toArray(function(err,result){
+                        console.log(result.Email);
+                        if (err) throw err;
+                        console.log(result.length);
+                        if(result.length == 1){
+                            res.json({status : 'success', message : 'OK', result : result});
+                        }
+                        else{
+                            res.json({status : 'error', message : 'Please check the credentials', result : null});
+                        }
+                    })
+                })
+            }
+            })
+            }
 
-  MongoClient.connect(url, function(err, db){ 
-        var dbo = db.db("heroku_zn69xqhf");
-        var email = { Email : input.Email };
-         var newValues = { 
-             $set: {Email : input.Email , 
-          Password : input.Password,
-          UserType: input.UserType,
-          UserProfileImage: input.UserProfileImage }
-       };
-        dbo.collection("CLC_User").updateOne(email, newValues, function(err, res) {
-          if (err) throw err;
-          console.log(input.Email);
-          console.log("User Details Updated Successfully !!");
-          db.close();
-        });
-  });
-}
+        // Update User Details
+        exports.UpdateUserDetails = function(req, res){
+            var input = req.body;
+            signupValidation(input, function(errMessage){
+              if(errMessage != ""){
+                  console.log(errMessage);
+                  res.send(JSON.stringify({status:'error', message:errMessage, result:null}));
+              }else{
+          
+            MongoClient.connect(url, function(err, db){ 
+                  var dbo = db.db("heroku_zn69xqhf");
+                  var email = { Email : input.Email };
+                   var newValues = { 
+                       $set: {
+                      Email : input.Email , 
+                    Password : input.Password,
+                    UserType: input.UserType,
+                    UserProfileImage: input.UserProfileImage }
+                 };
+                  dbo.collection("CLC_User").updateOne(email, newValues, function(err, res) {
+                    if (err) throw err;
+                    console.log(input.Email);
+                    console.log("User Details Updated Successfully !!");
+                    db.close();
+                          });
+                      });
+                  }
+              })
+          }
 
 //Get Employee Details
 exports.DeleteRecord = function(req, res){
@@ -104,4 +130,25 @@ exports.DeleteRecord = function(req, res){
           db.close();
         });                
   });
+}
+
+
+function signupValidation(input, callback){
+    var errorMessage = "";
+    //console.log(Object.keys(input));
+    if (Object.keys(input).length == 0){
+        errorMessage = "Parameters missing";
+    }else{
+       if(input.Email == '' || input.Email == null){
+             errorMessage = 'Missing Email';
+        }else if(input.Password == '' || input.Password == null){
+             errorMessage = 'Missing Password';
+        }else if(input.UserType == '' || input.UserType == null){
+             errorMessage = 'Missing UserType';
+        }
+        // }else if(input.UserProfileImage == '' || input.UserProfileImage == null){
+        //      errorMessage = 'Missing UserProfileImage';
+        // }
+    }
+    callback(errorMessage);
 }

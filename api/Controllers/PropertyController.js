@@ -90,19 +90,25 @@ exports.UpdateProperty = function(req, res){
         }
 
         //GetBookingPropertyList
-exports.GetBookingProperty = function(req, res){
-    var input = req.body;
-    MongoClient.connect(url, function(err, db){ 
-          var dbo = db.db("heroku_zn69xqhf");
-           var newValues = {UserID : input.UserID};
-          dbo.collection("CLC_Property").find(newValues, function(err, res) {
-            if (err) throw err;
-            console.log("Got one record Successfully !!");
-            db.close();
-          });
-    });
-}
-
+        exports.GetBookingProperty = function(req, res){
+            var input = req.body;
+            MongoClient.connect(url, function(err, db){ 
+                  var dbo = db.db("heroku_zn69xqhf");
+                   var newValues = {UserID : input.UserID};
+                   console.log(newValues);
+                  dbo.collection("CLC_Appointments").find(newValues).toArray(function(err, result) {
+                    if (err) throw err;
+                    console.log(result.length);
+                    if(result !=null ){
+                        console.log("Got one record Successfully !!");
+                    res.json({status : 'success', message : 'Records found', result : result});
+                    } else{
+                        res.json({status : 'error', message : 'No records found', result : null});
+                    }
+                    db.close();
+                  });
+            });
+        }
 //Get PropertyList
 exports.GetProperty = function(req, res){
     var input = req.body;
@@ -117,7 +123,7 @@ exports.GetProperty = function(req, res){
           dbo.collection('CLC_Property').find(newValues).toArray(function(err,result){
             if (err) throw err;
             console.log(result.length);
-            if(result.length == 1){
+            if(result!=null){
                 res.json({status : 'success', message : 'Records found', result : result});
             }
             else{
@@ -136,7 +142,7 @@ exports.GetSellingProperty = function(req, res){
           dbo.collection('CLC_Property').find(newValues).toArray(function(err,result){
             if (err) throw err;
             console.log(result.length);
-            if(result.length == 1){
+            if(result!=null){
                 res.json({status : 'success', message : 'Records found', result : result});
             }
             else{
@@ -178,12 +184,32 @@ exports.GetFavoriteProperty = function(req, res){
           dbo.collection('CLC_Property').find(newValues).toArray(function(err,result){
             if (err) throw err;
             console.log(result.length);
-            if(result.length == 1){
+            if(result!=null){
                 res.json({status : 'success', message : 'Records found', result : result});
             }
             else{
                 res.json({status : 'error', message : 'No records found', result : null});
             }
         })
+    });
+}
+
+exports.GetAllBookingProperty = function(req, res){
+    var input = req.body;
+    MongoClient.connect(url, function(err, db){ 
+          var dbo = db.db("heroku_zn69xqhf");
+           var newValues = {AppointmentStatus : input.AppointmentStatus};
+           console.log(newValues);
+          dbo.collection("CLC_Appointments").find(newValues).toArray(function(err, result) {
+            if (err) throw err;
+            console.log(result.length);
+            if(result !=null ){
+                console.log("Got one record Successfully !!");
+            res.json({status : 'success', message : 'Records found', result : result});
+            } else{
+                res.json({status : 'error', message : 'No records found', result : null});
+            }
+            db.close();
+          });
     });
 }
