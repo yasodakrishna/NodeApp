@@ -11,8 +11,9 @@ exports.CreateProperty = function(req, res){
             MongoClient.connect(url, function(err, db){ 
                 var dbo = db.db("heroku_zn69xqhf");
                 var collectionName="CLC_Property";
+                autoIncrement.getNextSequence(dbo, collectionName,"PropertyId", function (err, autoIndex) {
                 var query = { 
-                    PropertyId : input.PropertyId,
+                    PropertyId : autoIndex,
                     UserID:input.UserID,
                     Property_Type : input.Property_Type,
                     BHKType : input.BHKType,
@@ -44,6 +45,7 @@ exports.CreateProperty = function(req, res){
                     res.json({status : 'success', message : 'OK', result : input});
                     db.close();
                   });
+                });
                 });
         }
 
@@ -153,27 +155,27 @@ exports.GetSellingProperty = function(req, res){
 }
 
 //Make Favorite Property List
-exports.MakeFavoriteProperty = function(req, res){
-    var input = req.body;
-    MongoClient.connect(url, function(err, db){ 
-          var dbo = db.db("heroku_zn69xqhf");
-          var oldvalues={ 
-            UserID: input.UserID, 
-            PropertyId:input.PropertyId,
-            }
-           var newValues = {
-            $set: {
-            IsFavorite:input.IsFavorite
-                }
-            };
-            dbo.collection("CLC_Property").updateOne(oldvalues, newValues, function(err, res) {
-            if (err) throw err;
-            console.log(input.IsFavorite);
-            console.log("User Favorite Updated Successfully !!");
-            db.close();
-            });
-    });
-}
+// exports.MakeFavoriteProperty = function(req, res){
+//     var input = req.body;
+//     MongoClient.connect(url, function(err, db){ 
+//           var dbo = db.db("heroku_zn69xqhf");
+//           var oldvalues={ 
+//             UserID: input.UserID, 
+//             PropertyId:input.PropertyId,
+//             }
+//            var newValues = {
+//             $set: {
+//             IsFavorite:input.IsFavorite
+//                 }
+//             };
+//             dbo.collection("CLC_Property").updateOne(oldvalues, newValues, function(err, res) {
+//             if (err) throw err;
+//             console.log(input.IsFavorite);
+//             console.log("User Favorite Updated Successfully !!");
+//             db.close();
+//             });
+//     });
+// }
 
 //Get Favorite Property List
 exports.GetFavoriteProperty = function(req, res){
@@ -211,5 +213,29 @@ exports.GetAllBookingProperty = function(req, res){
             }
             db.close();
           });
+    });
+}
+
+
+
+exports.MakeFavoriteProperty = function(req, res){
+    var input = req.body;
+    MongoClient.connect(url, function(err, db){ 
+          var dbo = db.db("heroku_zn69xqhf");
+          var oldvalues={ 
+            UserID: input.UserID, 
+            PropertyId:input.PropertyId,
+            }
+           var newValues = {
+            $set: {
+            IsFavorite:input.IsFavorite
+                }
+            };
+            dbo.collection("CLC_Isfavorite").updateOne(oldvalues, newValues, function(err, res) {
+            if (err) throw err;
+            console.log(input.IsFavorite);
+            console.log("User Favorite Updated Successfully !!");
+            db.close();
+            });
     });
 }
