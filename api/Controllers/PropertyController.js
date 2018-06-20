@@ -55,7 +55,7 @@ exports.UpdateProperty = function(req, res){
     var input = req.body;      
             MongoClient.connect(url, function(err, db){ 
                 var dbo = db.db("heroku_zn69xqhf");
-                var Propertyidval={ UserID: input.UserID };
+                var Propertyidval={ UserID: input.UserID,PropertyId:parseInt(input.PropertyId) };
                 console.log('userid is ' );
                 console.log(Propertyidval);
                 var query = { $set: { 
@@ -113,25 +113,52 @@ exports.UpdateProperty = function(req, res){
         }
 //Get PropertyList
 exports.GetProperty = function(req, res){
+
     var input = req.body;
+    var newValues;
     MongoClient.connect(url, function(err, db){ 
           var dbo = db.db("heroku_zn69xqhf");
           //var email = { Email : input.Email };
-           var newValues = { 
-               Location : input.Location , 
-                Property_Type : input.Property_Type,
-                BHKType: input.BHKType
-            };
-          dbo.collection('CLC_Property').find(newValues).toArray(function(err,result){
-            if (err) throw err;
-            console.log(result.length);
-            if(result!=null){
-                res.json({status : 'success', message : 'Records found', result : result});
-            }
-            else{
-                res.json({status : 'error', message : 'No records found', result : null});
-            }
-        })
+          if(parseInt(input.Location)) {
+             newValues = { 
+                 Zip : input.Location , 
+                 Property_Type : input.Property_Type,
+                 BHKType: input.BHKType,
+ 
+             };
+            
+             // {$or: [{Location:''},{Property_Type:'Villa'}]}
+                dbo.collection('CLC_Property').find({$or: [{Zip:newValues.Location},{Property_Type:newValues.Property_Type},{BHKType:newValues.BHKType}]}).toArray(function(err,result){
+                    if (err) throw err;
+                    console.log(result.length);
+                    if(result.length>0){
+                        res.json({status : 'success', message : 'Records found', result : result});
+                    }
+                    else{
+                        res.json({status : 'error', message : 'No records found', result : null});
+                    }
+                })
+           }
+           else {
+             newValues = { 
+                Location : input.Location , 
+                 Property_Type : input.Property_Type,
+                 BHKType: input.BHKType,
+ 
+             };
+             var loc= newValues.Location;
+             console.log(loc)
+             dbo.collection('CLC_Property').find({$or: [{Location:new RegExp(loc ,'i')},{Property_Type:newValues.Property_Type},{BHKType:newValues.BHKType}]}).toArray(function(err,result){
+                    if (err) throw err;
+                    console.log(result.length);
+                    if(result!=null){
+                        res.json({status : 'success', message : 'Records found', result : result});
+                    }
+                    else{
+                        res.json({status : 'error', message : 'No records found', result : null});
+                    }
+                })
+           }
     });
 }
 
@@ -153,36 +180,12 @@ exports.GetSellingProperty = function(req, res){
         })
     });
 }
-
-//Make Favorite Property List
-// exports.MakeFavoriteProperty = function(req, res){
-//     var input = req.body;
-//     MongoClient.connect(url, function(err, db){ 
-//           var dbo = db.db("heroku_zn69xqhf");
-//           var oldvalues={ 
-//             UserID: input.UserID, 
-//             PropertyId:input.PropertyId,
-//             }
-//            var newValues = {
-//             $set: {
-//             IsFavorite:input.IsFavorite
-//                 }
-//             };
-//             dbo.collection("CLC_Property").updateOne(oldvalues, newValues, function(err, res) {
-//             if (err) throw err;
-//             console.log(input.IsFavorite);
-//             console.log("User Favorite Updated Successfully !!");
-//             db.close();
-//             });
-//     });
-// }
-
 //Get Favorite Property List
 exports.GetFavoriteProperty = function(req, res){
     var input = req.body;
     MongoClient.connect(url, function(err, db){ 
           var dbo = db.db("heroku_zn69xqhf");
-           var newValues = {UserID: input.UserID,IsFavorite:input.IsFavorite};
+           var newValues = {UserID: input.UserID,IsFavorite:input.IsFavorite,PropertyId:input.PropertyId};
           dbo.collection('CLC_Property').find(newValues).toArray(function(err,result){
             if (err) throw err;
             console.log(result.length);
@@ -215,9 +218,6 @@ exports.GetAllBookingProperty = function(req, res){
           });
     });
 }
-
-
-
 exports.MakeFavoriteProperty = function(req, res){
     var input = req.body;
     MongoClient.connect(url, function(err, db){ 
@@ -239,3 +239,26 @@ exports.MakeFavoriteProperty = function(req, res){
             });
     });
 }
+
+// exports.sample = function(req, res){
+//     var input = req.body;
+//     MongoClient.connect(url, function(err, db){ 
+//         if (err) throw err;
+//           var dbo = db.db("heroku_zn69xqhf");
+//           dbo.collection('CLC_Isfavorite').aggregate([
+//               {
+//                   $lookup: 
+//                   {
+//                       from: 'CLC_property',
+//                       localField:'PropertyId',
+//                       foreignField:'PropertyId',
+//                       as:'propertyfavaraties'
+//                     }
+//                 }
+//                 ]).toArray(function(err,result){
+//                     if (err) throw err;
+//                     console.log(JSON.stringify(result))
+//                     db.close();
+//                 })
+//     });
+// }

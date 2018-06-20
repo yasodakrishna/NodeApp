@@ -31,57 +31,13 @@ exports.SechduleAppointment = function(req, res){
                 })
         }
 
-//Accept Appointment
-// exports.AcceptAppointment = function(req, res){
-//     var input = req.body;      
-//             MongoClient.connect(url, function(err, db){ 
-//                 var dbo = db.db("heroku_zn69xqhf");                
-//                 var value=input.Acceptappointment
-//                 if(value !=null){
-//                     var query = { Acceptappointment: input.Acceptappointment};
-//                     dbo.collection("CLC_Appointments").insertOne(query, function(err, result) {
-//                         if (err) throw err;
-//                         console.log("Accept document inserted");
-//                         res.json({status : 'success', message : 'OK', result : input});
-//                         db.close();
-//                       });
-//                 }
-//                 else{
-//                     var query = { $set: { Acceptappointment: input.Acceptappointment}};
-//                     dbo.collection("CLC_Appointments").updateOne(query, function(err, result) {
-//                         if (err) throw err;
-//                         console.log("Accept document inserted");
-//                         res.json({status : 'success', message : 'OK', result : input});
-//                         db.close();
-//                       });
-//                 }
-          
-//             });
-//         }
-
-        //Cancel Appointment
-        // exports.CancelAppointment = function(req, res){
-        //     var input = req.body;      
-        //             MongoClient.connect(url, function(err, db){ 
-        //                 var dbo = db.db("heroku_zn69xqhf");
-        //                 var query = { Cancelappointment: input.Cancelappointment};
-        //                 dbo.collection("CLC_Appointments").insertOne(query, function(err, result) {
-        //                     if (err) throw err;
-        //                     console.log("Cancel document inserted");
-        //                     res.json({status : 'success', message : 'OK', result : input});
-        //                     db.close();
-        //                   });
-        //             });
-        //         }
-
-
-
-
                 exports.AcceptAppointment = function(req, res){
                     var input = req.body;                  
                     MongoClient.connect(url, function(err, db){ 
                           var dbo = db.db("heroku_zn69xqhf");
-                          var Values = { AppointmentID : input.AppointmentID};
+                          var Values = { AppointmentID :parseInt( input.AppointmentID)};
+                        //   parseInt(req.body.AppointmentID, 10);
+                          console.log(typeof parseInt(Values));
                            var newValues = { 
                                $set: {
                                 AppointmentStatus : input.AppointmentStatus,
@@ -90,6 +46,7 @@ exports.SechduleAppointment = function(req, res){
                          };
                           dbo.collection("CLC_Appointments").updateOne(Values, newValues, function(err, res) {
                             if (err) throw err;
+                            console.log(err);
                             console.log(input.AppointmentID);
                             console.log("Appointment Accepted Successfully !!");
                             db.close();

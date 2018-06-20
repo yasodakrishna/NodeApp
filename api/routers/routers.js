@@ -58,20 +58,11 @@ module.exports = function (app) {
    app.route('/acceptappointment')
    .post(appointmentControllerCtrl.AcceptAppointment);
 
-   //Cancel Appointment
-   //app.route('/cancelappointment')
-   //.post(appointmentControllerCtrl.CancelApointment);   
-   
-   //Tracking
-   //app.route('/tracking')
-   //.post(TrackingControllerCtrl.Tracking);
-   
-     //TrackEndpoints
-    //  app.route('/trackendpoints')
-    //  .get(TrackingControllerCtrl.TrackEndpoints);   
-
      app.route('/getallbookingproperty')
-     .post(propertyCtrl.GetAllBookingProperty);
+     .post(propertyCtrl.GetAllBookingProperty);  
+
+    //  app.route('/sample')
+    //  .get(propertyCtrl.sample); 
 
 
 };
