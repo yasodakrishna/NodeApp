@@ -64,8 +64,8 @@ module.exports = function (app) {
      app.route('/getgeneralProperty')
      .post(propertyCtrl.GetgeneralProperty);  
 
-    //  app.route('/sample')
-    //  .get(propertyCtrl.sample);   
+     app.route('/sample')
+     .get(propertyCtrl.sample);   
 
 
 };

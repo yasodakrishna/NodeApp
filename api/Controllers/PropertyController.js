@@ -236,6 +236,7 @@ exports.MakeFavoriteProperty = function(req, res){
             dbo.collection("CLC_Isfavorite").updateOne(oldvalues, newValues, function(err, res) {
             if (err) throw err;
             console.log(input.IsFavorite);
+             res.json({status : 'success', message : 'Records found', result : input});
             console.log("User Favorite Updated Successfully !!");
             db.close();
             });
@@ -268,25 +269,25 @@ exports.GetgeneralProperty = function(req, res){
 
 
 
-// exports.sample = function(req, res){
-//     var input = req.body;
-//     MongoClient.connect(url, function(err, db){ 
-//         if (err) throw err;
-//           var dbo = db.db("heroku_zn69xqhf");
-//           dbo.collection('CLC_Isfavorite').aggregate([
-//               {
-//                   $lookup: 
-//                   {
-//                       from: 'CLC_Property',
-//                       localField:'PropertyId',
-//                       foreignField:'PropertyId',
-//                       as:'propertyfavorites'
-//                     }
-//                 }
-//                 ]).toArray(function(err,result){
-//                     if (err) throw err;
-//                     console.log(JSON.stringify(result))
-//                     db.close();
-//                 })
-//     });
-// }
+exports.sample = function(req, res){
+    var input = req.body;
+    MongoClient.connect(url, function(err, db){ 
+        if (err) throw err;
+          var dbo = db.db("heroku_zn69xqhf");
+          dbo.collection('CLC_Isfavorite').aggregate([
+              {
+                  $lookup: 
+                  {
+                      from: 'CLC_Property',
+                      localField:'PropertyId',
+                      foreignField:'PropertyId',
+                      as:'propertyfavorites'
+                    }
+                }
+                ]).toArray(function(err,result){
+                    if (err) throw err;
+                    console.log(JSON.stringify(result))
+                    db.close();
+                })
+    });
+}

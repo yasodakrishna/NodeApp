@@ -44,10 +44,11 @@ exports.SechduleAppointment = function(req, res){
                                 AssignedAgentID : input.AssignedAgentID
                                 }
                          };
-                          dbo.collection("CLC_Appointments").updateOne(Values, newValues, function(err, res) {
+                          dbo.collection("CLC_Appointments").updateOne(Values, newValues, function(err, result) {
                             if (err) throw err;
                             console.log(err);
                             console.log(input.AppointmentID);
+                            res.json({status : 'success', message : 'OK', result : input});
                             console.log("Appointment Accepted Successfully !!");
                             db.close();
                                   });
