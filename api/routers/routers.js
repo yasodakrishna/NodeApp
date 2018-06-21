@@ -59,7 +59,13 @@ module.exports = function (app) {
    .post(appointmentControllerCtrl.AcceptAppointment);
 
      app.route('/getallbookingproperty')
-     .post(propertyCtrl.GetAllBookingProperty);  
+     .post(propertyCtrl.GetAllBookingProperty);    
+
+     app.route('/getgeneralProperty')
+     .post(propertyCtrl.GetgeneralProperty);  
+
+    //  app.route('/sample')
+    //  .get(propertyCtrl.sample);   
 
 
 };
