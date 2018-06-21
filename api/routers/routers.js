@@ -61,8 +61,5 @@ module.exports = function (app) {
      app.route('/getallbookingproperty')
      .post(propertyCtrl.GetAllBookingProperty);  
 
-    //  app.route('/sample')
-    //  .get(propertyCtrl.sample); 
-
 
 };
