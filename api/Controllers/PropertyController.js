@@ -187,7 +187,7 @@ exports.GetFavoriteProperty = function(req, res){
     MongoClient.connect(url, function(err, db){ 
           var dbo = db.db("heroku_zn69xqhf");
            var newValues = {UserID: input.UserID,IsFavorite:input.IsFavorite,PropertyId:input.PropertyId};
-          dbo.collection('CLC_Property').find(newValues).toArray(function(err,result){
+          dbo.collection('CLC_Isfavorite').find(newValues).toArray(function(err,result){
             if (err) throw err;
             console.log(result.length);
             if(result!=null){
@@ -267,10 +267,12 @@ exports.GetgeneralProperty = function(req, res){
 
 
 
-
+//
 
 exports.sample = function(req, res){
     var input = req.body;
+    var newValues = {UserID:input.UserID,IsFavorite:input.IsFavorite,PropertyId:input.PropertyId}
+    console.log(input);
     MongoClient.connect(url, function(err, db){ 
         if (err) throw err;
           var dbo = db.db("heroku_zn69xqhf");
@@ -286,7 +288,9 @@ exports.sample = function(req, res){
                 }
                 ]).toArray(function(err,result){
                     if (err) throw err;
+                    //console.log(result.PropertyId)
                     console.log(JSON.stringify(result))
+                    res.json({status : 'success', message : 'Records found', result : result});
                     db.close();
                 })
     });

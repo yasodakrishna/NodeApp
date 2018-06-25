@@ -7,8 +7,8 @@ module.exports = function (app) {
   var TrackingControllerCtrl = require('../Controllers/TrackingController'); 
   
   //user Routes
-  app.route('/userCtrl')
-    .get(userCtrl.getUsers);
+  app.route('/getusers')
+    .post(userCtrl.getUsers);
 
  //user signup Routes
    app.route('/signup')

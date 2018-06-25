@@ -6,18 +6,40 @@ var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://heroku_zn69xqhf:pplo9p5dcjqn6i3l0cdeiov71v@ds259250.mlab.com:59250/heroku_zn69xqhf";
 
 // to get all the Buildings information
-exports.getUsers = function (req, res) {  
-  MongoClient.connect(url, function(err, db){ 
-    if (err) throw err;
-  var dbo = db.db("heroku_zn69xqhf");
-  dbo.collection("CLC_User").findOne({}, function(err, result) {
-    if (err) throw err;
-    console.log(result.Email);
-    res.json({status : 'success', message : 'OK', result : result});    
-    db.close();
-  });  
-});
-  };
+// exports.getUsers = function (req, res) {  
+//     var input = req.body;
+//   MongoClient.connect(url, function(err, db){ 
+
+//     if (err) throw err;
+//   var dbo = db.db("heroku_zn69xqhf");
+//   var newValues = {UserID: input.UserID};
+//   dbo.collection("CLC_User").find(newValues).toArray(function(err, result) {
+//     if (err) throw err;
+//     //console.log(result.Email);
+//     res.json({status : 'success', message : 'OK', result : result});    
+//     db.close();
+//   });  
+// });
+//   };
+
+
+exports.getUsers = function(req, res){
+    var input = req.body;
+    MongoClient.connect(url, function(err, db){ 
+          var dbo = db.db("heroku_zn69xqhf");
+           var newValues = {UserID: parseInt(input.UserID)};
+          dbo.collection('CLC_User').find(newValues).toArray(function(err,result){
+            if (err) throw err;
+            console.log(result.length);
+            if(result!=null){
+                res.json({status : 'success', message : 'Records found', result : result});
+            }
+            else{
+                res.json({status : 'error', message : 'No records found', result : null});
+            }
+        })
+    });
+}
 
   // User Registration
   exports.signUp = function(req, res){
@@ -84,7 +106,7 @@ exports.getUsers = function (req, res) {
             })
             }
 
-        // Update User Details
+// Update User Details
         exports.UpdateUserDetails = function(req, res){
             var input = req.body;
             signupValidation(input, function(errMessage){
@@ -95,7 +117,7 @@ exports.getUsers = function (req, res) {
           
             MongoClient.connect(url, function(err, db){ 
                   var dbo = db.db("heroku_zn69xqhf");
-                  var email = { Email : input.Email };
+                  var userid = { UserID : parseInt(input.UserID) };
                    var newValues = { 
                        $set: {
                       Email : input.Email , 
@@ -103,10 +125,12 @@ exports.getUsers = function (req, res) {
                     UserType: input.UserType,
                     UserProfileImage: input.UserProfileImage }
                  };
-                  dbo.collection("CLC_User").updateOne(email, newValues, function(err, res) {
+                  dbo.collection("CLC_User").updateOne(userid, newValues, function(err, result) {
                     if (err) throw err;
-                    console.log(input.Email);
+                    console.log(result);
+                    // res.json({status : 'success', message : 'OK', result : result});
                     console.log("User Details Updated Successfully !!");
+                    res.json({status : 'success', message : 'OK', result : input});
                     db.close();
                           });
                       });
@@ -143,9 +167,10 @@ function signupValidation(input, callback){
              errorMessage = 'Missing Email';
         }else if(input.Password == '' || input.Password == null){
              errorMessage = 'Missing Password';
-        }else if(input.UserType == '' || input.UserType == null){
-             errorMessage = 'Missing UserType';
-        }
+         }
+         //else if(input.UserType == '' || input.UserType == null){
+        //      errorMessage = 'Missing UserType';
+        // }
         // }else if(input.UserProfileImage == '' || input.UserProfileImage == null){
         //      errorMessage = 'Missing UserProfileImage';
         // }
