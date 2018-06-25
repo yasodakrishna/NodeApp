@@ -44,7 +44,11 @@ module.exports = function (app) {
 
    //Make Favorite Property
    app.route('/makefavoriteproperty')
-   .post(propertyCtrl.MakeFavoriteProperty);
+   .post(propertyCtrl.MakeFavoriteProperty);   
+
+      //Make UnFavorite Property
+      app.route('/makeunfavoriteproperty')
+      .post(propertyCtrl.MakeUnFavoriteProperty); 
 
    //Get Favorite Property
    app.route('/getfavoriteproperty')
@@ -62,10 +66,6 @@ module.exports = function (app) {
      .post(propertyCtrl.GetAllBookingProperty);    
 
      app.route('/getgeneralProperty')
-     .post(propertyCtrl.GetgeneralProperty);  
-
-     app.route('/sample')
-     .get(propertyCtrl.sample);   
-
+     .post(propertyCtrl.GetgeneralProperty);
 
 };

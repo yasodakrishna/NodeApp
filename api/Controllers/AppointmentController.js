@@ -7,7 +7,10 @@ var MongoClient = require('mongodb').MongoClient;
 
 //Sechdule Appointment
 exports.SechduleAppointment = function(req, res){
-    var input = req.body;      
+    var input = req.body;   
+    // var propid=parseInt(input.PropertyId);
+    // // console.log(propid)
+    // console.log(typeof(propid))   
             MongoClient.connect(url, function(err, db){ 
                 var dbo = db.db("heroku_zn69xqhf");
                 var collectionName="CLC_Appointments";
@@ -15,7 +18,8 @@ exports.SechduleAppointment = function(req, res){
                 var query = { 
                     AppointmentID : autoIndex,
                     UserID :input.UserID,
-                    PropertyID : input.PropertyID,
+                    PropertyId : parseInt(input.PropertyId),
+                   
                     AssignedAgentID : input.AssignedAgentID,
                     Date : input.Date , 
                     Time : input.Time,                    

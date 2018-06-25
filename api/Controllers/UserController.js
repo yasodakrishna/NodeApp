@@ -122,7 +122,6 @@ exports.getUsers = function(req, res){
                        $set: {
                       Email : input.Email , 
                     Password : input.Password,
-                    UserType: input.UserType,
                     UserProfileImage: input.UserProfileImage }
                  };
                   dbo.collection("CLC_User").updateOne(userid, newValues, function(err, result) {
