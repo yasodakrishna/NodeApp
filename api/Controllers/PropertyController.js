@@ -245,7 +245,7 @@ exports.GetAllBookingProperty = function(req, res){
 exports.MakeFavoriteProperty = function(req, res){
     var input = req.body; 
     console.log('input is:'); 
-    console.log(input);
+    console.log(typeof(PropertyId));
             MongoClient.connect(url, function(err, db){ 
                 var dbo = db.db("heroku_zn69xqhf");
                 var collectionName="CLC_Isfavorite";

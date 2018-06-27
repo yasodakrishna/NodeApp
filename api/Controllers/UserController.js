@@ -4,24 +4,9 @@ var autoIncrement = require("mongodb-autoincrement");
 
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://heroku_zn69xqhf:pplo9p5dcjqn6i3l0cdeiov71v@ds259250.mlab.com:59250/heroku_zn69xqhf";
-
-// to get all the Buildings information
-// exports.getUsers = function (req, res) {  
-//     var input = req.body;
-//   MongoClient.connect(url, function(err, db){ 
-
-//     if (err) throw err;
-//   var dbo = db.db("heroku_zn69xqhf");
-//   var newValues = {UserID: input.UserID};
-//   dbo.collection("CLC_User").find(newValues).toArray(function(err, result) {
-//     if (err) throw err;
-//     //console.log(result.Email);
-//     res.json({status : 'success', message : 'OK', result : result});    
-//     db.close();
-//   });  
-// });
-//   };
-
+var async = require('async');
+var crypto = require('crypto');
+var nodemailer = require("nodemailer");
 
 exports.getUsers = function(req, res){
     var input = req.body;
@@ -61,6 +46,8 @@ exports.getUsers = function(req, res){
                     Email : input.Email ,
                     Password : input.Password,
                     UserType: input.UserType,
+                    resetPasswordToken:input.resetPasswordToken,
+                    resetPasswordExpires:input.resetPasswordExpires,
                     UserProfileImage: input.UserProfileImage};
                 dbo.collection(collectionName).insertOne(query, function(err, result) {
                     if (err) throw err;
@@ -176,3 +163,68 @@ function signupValidation(input, callback){
     }
     callback(errorMessage);
 }
+
+
+
+
+
+
+//==================Email sending=============================
+exports.forgotpasswordResponse = function(req, res, next) {
+    var input=req.body;
+    console.log(input);
+    async.waterfall([
+        function(done) {
+            crypto.randomBytes(20, function(err, buf) {
+                var token = buf.toString('hex');
+                done(err, token);
+            });
+        },
+        function(token, done) {
+            MongoClient.connect(url, function(err, db){ 
+                var dbo = db.db("heroku_zn69xqhf");
+                console.log(req.body.Email);
+                var query = { Email : req.body.Email };
+                dbo.collection('CLC_User').find(query).toArray(function(err,result){
+                    if(result.length == 0){
+                        req.flash('error', 'No account with that email address exists.');
+                    }
+                    var myquery = { Email: result[0].Email };
+                    var newvalues = { $set: {resetPasswordToken: token, resetPasswordExpires: Date.now() + 3600000 }};
+                    dbo.collection("CLC_User").updateOne(myquery, newvalues, function(err, res) {
+                        if (err) throw err;
+                        console.log("1 document updated");
+                    });
+                    console.log(result[0].Email);
+                    done(err, token, result);
+                });
+            });
+        },
+        function(token, result, done) {
+            var smtpTransport = nodemailer.createTransport({
+                service: 'SendGrid',
+                auth: {
+                  user: 'property@123',
+                  pass: 'sagarsoft123'
+                }
+              });
+            const mailOptions = {
+                to: result[0].Email,
+                from: 'passwordreset@demo.com',
+                subject: 'Node.js Password Reset',
+                text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                    'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                    'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+                    'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+            };
+            smtpTransport.sendMail(mailOptions, function(err) {
+                res.json({status : 'success', message : 'An e-mail has been sent to ' + result[0].Email + ' with further instructions.'});            
+                done(err, 'done');
+            });
+        }
+    ], function(err) {
+        if (err) return next(err);
+    });
+}
+
+

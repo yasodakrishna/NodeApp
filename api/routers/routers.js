@@ -5,6 +5,10 @@ module.exports = function (app) {
   var propertyCtrl = require('../Controllers/PropertyController');  
   var appointmentControllerCtrl = require('../Controllers/AppointmentController'); 
   var TrackingControllerCtrl = require('../Controllers/TrackingController'); 
+  var Resetpassword = require('../Controllers/ResetpasswordController'); 
+  var setpassword = require('../Controllers/SetpasswordController'); 
+
+
   
   //user Routes
   app.route('/getusers')
@@ -16,7 +20,11 @@ module.exports = function (app) {
 
    //user validate Routes
    app.route('/login')
-  .post(userCtrl.UserValidate);
+  .post(userCtrl.UserValidate);   
+
+    //user validate Routes
+    app.route('/forgetpassword')
+    .post(userCtrl.Forgetpassword);   
 
    //update user Routes
    app.route('/updateuser')
@@ -66,6 +74,24 @@ module.exports = function (app) {
      .post(propertyCtrl.GetAllBookingProperty);    
 
      app.route('/getgeneralProperty')
-     .post(propertyCtrl.GetgeneralProperty);
+     .post(propertyCtrl.GetgeneralProperty);  
 
+
+         //forgot password Routes
+    app.route('/forgotpasswordResponse')
+    .post(userCtrl.forgotpasswordResponse);  
+
+
+    //Resetpassword Routes
+
+    app.route('/reset/:token')
+    .get(Resetpassword.resetpasswordResponse);  
+
+    //set password
+
+    app.route('/reset/:token')
+    .post(setpassword.setpasswordResponsemail);  
 };
+
+
+
