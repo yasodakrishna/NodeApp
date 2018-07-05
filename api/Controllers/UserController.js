@@ -4,15 +4,23 @@ var autoIncrement = require("mongodb-autoincrement");
 
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://heroku_zn69xqhf:pplo9p5dcjqn6i3l0cdeiov71v@ds259250.mlab.com:59250/heroku_zn69xqhf";
+var formidable = require('formidable');
+var fs = require('fs');
 var async = require('async');
 var crypto = require('crypto');
 var nodemailer = require("nodemailer");
 
+//sample
+
+
+
 exports.getUsers = function(req, res){
     var input = req.body;
-    MongoClient.connect(url, function(err, db){ 
+    MongoClient.connect(url, function(err, db){
+        console.log(input); 
           var dbo = db.db("heroku_zn69xqhf");
            var newValues = {UserID: parseInt(input.UserID)};
+           console.log(newValues);
           dbo.collection('CLC_User').find(newValues).toArray(function(err,result){
             if (err) throw err;
             console.log(result.length);
@@ -28,15 +36,24 @@ exports.getUsers = function(req, res){
 
   // User Registration
   exports.signUp = function(req, res){
-    var input = req.body; 
-    console.log('input is:'); 
-    console.log(input);
-    signupValidation(input, function(errMessage){
-      console.log(errMessage);
-      if(errMessage != ""){
-          console.log(errMessage);
-          res.send(JSON.stringify({status:'error', message:errMessage, result:null}));
-    }else{
+      console.log("welcome");
+    
+        var form = new formidable.IncomingForm();
+        form.parse(req, function (err, fields, files) {
+            if(err) throw err;
+            var input = fields;
+           console.log(input);
+           var oldpath = files.UserProfileImage.path;
+           console.log(oldpath);
+           filenamechange(files.UserProfileImage.name,function(newname){
+               console.log(newname);
+               var newpath = './Profilepic' + newname;
+               console.log(newpath);
+               fs.rename(oldpath, newpath, function (err) {
+                   console.log(newpath);
+                   if (err) throw err;
+                   console.log("file uploaded");
+               }) 
             MongoClient.connect(url, function(err, db){ 
                 var dbo = db.db("heroku_zn69xqhf");
                 var collectionName="CLC_User";
@@ -48,7 +65,7 @@ exports.getUsers = function(req, res){
                     UserType: input.UserType,
                     resetPasswordToken:input.resetPasswordToken,
                     resetPasswordExpires:input.resetPasswordExpires,
-                    UserProfileImage: input.UserProfileImage};
+                    UserProfileImage: newpath};
                 dbo.collection(collectionName).insertOne(query, function(err, result) {
                     if (err) throw err;
                     console.log("1 document inserted");
@@ -57,12 +74,25 @@ exports.getUsers = function(req, res){
                   });
                 });
               });
-              }
-          })
-        }
+            })
+         })
+    }
 
-      // Validate User && input.Password==result.Password 
-      exports.UserValidate=function(req, res){
+
+
+
+
+        
+
+
+function filenamechange(oldname, callback){
+    var arr = oldname.split('.');
+    var extension = arr[arr.length-1];
+    var newname = 'profilepic_' + Date.now() + '.' + extension;
+    callback(newname);
+}
+
+    exports.UserValidate=function(req, res){
         var input = req.body;
         signupValidation(input, function(errMessage){
             if(errMessage != ""){
@@ -94,7 +124,10 @@ exports.getUsers = function(req, res){
             }
 
 // Update User Details
-        exports.UpdateUserDetails = function(req, res){
+
+
+
+    exports.UpdateUserDetails = function(req, res){
             var input = req.body;
             signupValidation(input, function(errMessage){
               if(errMessage != ""){
@@ -145,7 +178,7 @@ exports.DeleteRecord = function(req, res){
 
 function signupValidation(input, callback){
     var errorMessage = "";
-    //console.log(Object.keys(input));
+    console.log(Object.keys(input));
     if (Object.keys(input).length == 0){
         errorMessage = "Parameters missing";
     }else{
@@ -163,16 +196,12 @@ function signupValidation(input, callback){
     }
     callback(errorMessage);
 }
-
-
-
-
-
-
 //==================Email sending=============================
+
 exports.forgotpasswordResponse = function(req, res, next) {
+
     var input=req.body;
-    console.log(input);
+    //console.log(input);
     async.waterfall([
         function(done) {
             crypto.randomBytes(20, function(err, buf) {
@@ -183,7 +212,7 @@ exports.forgotpasswordResponse = function(req, res, next) {
         function(token, done) {
             MongoClient.connect(url, function(err, db){ 
                 var dbo = db.db("heroku_zn69xqhf");
-                console.log(req.body.Email);
+                console.log(input.Email);
                 var query = { Email : req.body.Email };
                 dbo.collection('CLC_User').find(query).toArray(function(err,result){
                     if(result.length == 0){
@@ -195,21 +224,40 @@ exports.forgotpasswordResponse = function(req, res, next) {
                         if (err) throw err;
                         console.log("1 document updated");
                     });
-                    console.log(result[0].Email);
+                    
+
+                   // console.log(result[0].Email);
                     done(err, token, result);
                 });
             });
         },
-        function(token, result, done) {
+        function(token, result, done,Username,password) {
+            var emailVal = result[0].Email;
+            console.log(emailVal);
+            var Username="";
+            var password="";
+            MongoClient.connect(url, function(err, db){ 
+            var dbo = db.db("heroku_zn69xqhf");
+            dbo.collection('Accountsettings').find().toArray(function(err,result){
+                if (err) throw err;
+                Username=result[0].UserName;
+                password=result[0].Password;
+               // console.log(Username);
+               // console.log(password);
+                   // res.json({status : 'success', message : 'Records found', result : result});
+            
+
+            // console.log(Username);
             var smtpTransport = nodemailer.createTransport({
                 service: 'SendGrid',
                 auth: {
-                  user: 'property@123',
-                  pass: 'sagarsoft123'
+                  user: Username,
+                  pass: password
                 }
               });
+
             const mailOptions = {
-                to: result[0].Email,
+                to: emailVal,
                 from: 'passwordreset@demo.com',
                 subject: 'Node.js Password Reset',
                 text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
@@ -217,13 +265,18 @@ exports.forgotpasswordResponse = function(req, res, next) {
                     'http://' + req.headers.host + '/reset/' + token + '\n\n' +
                     'If you did not request this, please ignore this email and your password will remain unchanged.\n'
             };
-            smtpTransport.sendMail(mailOptions, function(err) {
-                res.json({status : 'success', message : 'An e-mail has been sent to ' + result[0].Email + ' with further instructions.'});            
+            smtpTransport.sendMail(mailOptions, function(err) {               
+                console.log("HI:"+emailVal);
+                res.json({status : 'success', message : 'An e-mail has been sent to ' + emailVal + ' with further instructions.'});            
                 done(err, 'done');
             });
+        })
+        });
         }
+        
     ], function(err) {
         if (err) return next(err);
+        
     });
 }
 

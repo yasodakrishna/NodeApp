@@ -14,12 +14,15 @@
     "crypto": "^1.0.1",
     "express": "^4.15.4",
     "express-flash": "0.0.2",
+    "formidable": "^1.2.1",
+    "fs": "0.0.1-security",
     "http": "0.0.0",
     "mongodb": "^3.0.10",
     "mongodb-autoincrement": "^1.0.1",
     "mongoose": "^4.10.8",
     "multer": "1.1.0",
     "nodemailer": "^4.6.7",
+    "path": "^0.12.7",
     "signalrjs": "^0.2.2"
   }
 }

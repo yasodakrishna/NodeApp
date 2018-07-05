@@ -154,28 +154,53 @@ exports.UpdateProperty = function(req, res){
 //Get PropertyList
 exports.GetProperty = function(req, res){
 
+    // var solution1;
+    // var solution2;
+    
     var input = req.body;
     var newValues;
+    var newname;
+    console.log("Join list:")
+    console.log(newname)
     MongoClient.connect(url, function(err, db){ 
           var dbo = db.db("heroku_zn69xqhf");
           //var email = { Email : input.Email };
+          //Junaid sample
+        //   var userid=input.UserID;
+        //   if(input.UserID!=null){
+        //  console.log("Welcome");
+        //  joinpoperty(userid,function(newname,err,result){
+        //     // var finalresult=newname;
+        //     //console.log(result.length);
+        //      console.log(newname);
+        //      solution1=newname
+        //     // console.log(newname.length);
+        //      //res.json({status:'success',message:'Join List',newname:newname})
+
+        //  })
+        //   }
+
+          //Junaid Sample 
           if(parseInt(input.Location)) {
+            
              newValues = { 
                  Zip : input.Location , 
                  Property_Type : input.Property_Type,
-                 BHKType: input.BHKType,
- 
+                // BHKType: input.BHKType,    ,{BHKType:newValues.BHKType}   {$and: [{Zip:newValues.Location},{Property_Type:newValues.Property_Type}]}
              };
-            
-             // {$or: [{Location:''},{Property_Type:'Villa'}]}
-                dbo.collection('CLC_Property').find({$or: [{Zip:newValues.Location},{Property_Type:newValues.Property_Type},{BHKType:newValues.BHKType}]}).toArray(function(err,result){
+             console.log(newValues.Zip);
+             console.log("Loop first")
+             var sort = { PropertyId: -1 };
+                dbo.collection('CLC_Property').find(newValues).sort(sort).toArray(function(err,result){
                     if (err) throw err;
                     console.log(result.length);
                     if(result.length>0){
-                        res.json({status : 'success', message : 'Records found', result : result});
+                        //solution2=result;
+                        res.json({status : 'success', message : 'Property Records found', result : result});
                     }
                     else{
                         res.json({status : 'error', message : 'No records found', result : null});
+                        //db.close();
                     }
                 })
            }
@@ -183,24 +208,67 @@ exports.GetProperty = function(req, res){
              newValues = { 
                 Location : input.Location , 
                  Property_Type : input.Property_Type,
-                 BHKType: input.BHKType,
+                // BHKType: input.BHKType,   ,{BHKType:newValues.BHKType}
  
              };
              var loc= newValues.Location;
-             console.log(loc)
-             dbo.collection('CLC_Property').find({$or: [{Location:new RegExp(loc ,'i')},{Property_Type:newValues.Property_Type},{BHKType:newValues.BHKType}]}).toArray(function(err,result){
+             console.log("Loop second")
+             var sort = { PropertyId: -1 }; 
+              dbo.collection('CLC_Property').find({$and: [{Location:new RegExp(loc ,'i')},
+              {Property_Type:newValues.Property_Type}]}).sort(sort).toArray(function(err,result){
                     if (err) throw err;
+                    console.log(err);
                     console.log(result.length);
                     if(result!=null){
-                        res.json({status : 'success', message : 'Records found', result : result});
+                        res.json({status : 'success', message : 'Property Records found', result : result});
+                        //solution2=result
+                       // db.close();
                     }
                     else{
                         res.json({status : 'error', message : 'No records found', result : null});
+                        
                     }
                 })
            }
+        //    var fullsolution=[];
+        //    fullsolution["solution1"]=solution1;
+        //   // fullsolution["solution2"]=solution2;
+        //    res.json({status:'success',message:'Record found',result:fullsolution});
     });
 }
+
+
+//Junaid joinproperty
+// function joinpoperty(userid,callback){
+//     var newname;
+//     MongoClient.connect(url, function(err, db){ 
+//     //console.log(userid);
+//     var dbo = db.db("heroku_zn69xqhf");
+//     dbo.collection('CLC_Property').aggregate([
+//         {
+//         $lookup: 
+//         {
+//         from: "CLC_Isfavorite",
+//     localField:"PropertyId",
+//     foreignField:"PropertyId",
+//     as:"propertyfavaraties"
+// }
+// },{ $match : { UserID : userid } }
+//     ]).toArray(function(err,result){
+//               if (err) throw err;
+//               //console.log("Join working")
+//               console.log(result)
+//                newname =result;
+//               //console.log(result)
+//              // res.json({status : 'success', message : 'Favorite Records found', result : result});
+//               //db.close();
+//           })
+//           callback(newname)
+//         })
+        
+// }
+
+
 
 //GetSelling PropertyList
 exports.GetSellingProperty = function(req, res){
@@ -309,13 +377,6 @@ exports.GetgeneralProperty = function(req, res){
         })
     });
 }
-
-
-
-
-
-
-//
 
 exports.GetFavoriteProperty = function(req, res){
    

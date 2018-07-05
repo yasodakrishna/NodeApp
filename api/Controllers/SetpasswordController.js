@@ -31,11 +31,21 @@ exports.setpasswordResponsemail = function(req, res) {
             });
         },
         function(user, done) {
+            MongoClient.connect(url, function(err, db){ 
+                var dbo = db.db("heroku_zn69xqhf");
+                var Username="";
+                var password="";
+                dbo.collection('Accountsettings').find().toArray(function(err,result){
+                    if (err) throw err;
+                    Username=result[0].UserName;
+                    password=result[0].Password;
+                })
+            })
             var smtpTransport = nodemailer.createTransport({
                 service: 'SendGrid',
                 auth: {
-                    user: 'property@123',
-                    pass: 'sagarsoft123'
+                    user: Username,
+                    pass: password
                 }
             });
             var mailOptions = {

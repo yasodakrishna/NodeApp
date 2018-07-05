@@ -2,13 +2,11 @@ var express = require('express'),
     app = express(),
     port = process.env.PORT || 3000,
     bodyParser = require('body-parser');
-  
-//User = require('./api/Models/UserModel'),
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
  
-
 app.use(function (req, res, next) {
     res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
     res.header("Access-Control-Allow-Origin", "*");

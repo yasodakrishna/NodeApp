@@ -7,8 +7,6 @@ module.exports = function (app) {
   var TrackingControllerCtrl = require('../Controllers/TrackingController'); 
   var Resetpassword = require('../Controllers/ResetpasswordController'); 
   var setpassword = require('../Controllers/SetpasswordController'); 
-
-
   
   //user Routes
   app.route('/getusers')
@@ -20,11 +18,7 @@ module.exports = function (app) {
 
    //user validate Routes
    app.route('/login')
-  .post(userCtrl.UserValidate);   
-
-    //user validate Routes
-    app.route('/forgetpassword')
-    .post(userCtrl.Forgetpassword);   
+  .post(userCtrl.UserValidate);
 
    //update user Routes
    app.route('/updateuser')
@@ -90,7 +84,12 @@ module.exports = function (app) {
     //set password
 
     app.route('/reset/:token')
-    .post(setpassword.setpasswordResponsemail);  
+    .post(setpassword.setpasswordResponsemail);    
+    
+  //update user Routes
+
+  //  app.route('/Uploads')
+  //  .post(userCtrl.Uploads);
 };
 
 
