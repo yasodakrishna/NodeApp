@@ -208,13 +208,17 @@ exports.GetProperty = function(req, res){
              newValues = { 
                 Location : input.Location , 
                  Property_Type : input.Property_Type,
-                // BHKType: input.BHKType,   ,{BHKType:newValues.BHKType}
+                // BHKType: input.BHKType,   ,{BHKType:newValues.BHKType}  new RegExp(loc ,'i')
  
              };
              var loc= newValues.Location;
-             console.log("Loop second")
+             
              var sort = { PropertyId: -1 }; 
-              dbo.collection('CLC_Property').find({$and: [{Location:new RegExp(loc ,'i')},
+      if((newValues.Location!=null &&newValues.Property_Type==null)||(newValues.Property_Type!=null&&newValues.Location==null ))
+            {
+                console.log(newValues.Property_Type)
+                console.log("Location condition")
+              dbo.collection('CLC_Property').find({$or: [{Location:newValues.Location},
               {Property_Type:newValues.Property_Type}]}).sort(sort).toArray(function(err,result){
                     if (err) throw err;
                     console.log(err);
@@ -229,6 +233,26 @@ exports.GetProperty = function(req, res){
                         
                     }
                 })
+            }
+            else{
+                console.log(newValues.Property_Type)
+                console.log("Location and property type condition")
+              dbo.collection('CLC_Property').find({$and: [{Location: new RegExp(loc ,'i')},
+              {Property_Type:newValues.Property_Type}]}).sort(sort).toArray(function(err,result){
+                    if (err) throw err;
+                    console.log(err);
+                    console.log(result.length);
+                    if(result!=null){
+                        res.json({status : 'success', message : 'Property Records found', result : result});
+                        //solution2=result
+                       // db.close();
+                    }
+                    else{
+                        res.json({status : 'error', message : 'No records found', result : null});
+                        
+                    }
+                })
+            }
            }
         //    var fullsolution=[];
         //    fullsolution["solution1"]=solution1;
