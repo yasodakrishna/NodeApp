@@ -158,12 +158,12 @@ exports.GetProperty = function(req, res){
     // var solution2;
     
     var input = req.body;
-    var newValues;
-    var newname;
-    console.log("Join list:")
-    console.log(newname)
+     var newValues;
+    // var newname;
+    // console.log("Join list:")
+    // console.log(newname)
     MongoClient.connect(url, function(err, db){ 
-          var dbo = db.db("heroku_zn69xqhf");
+         
           //var email = { Email : input.Email };
           //Junaid sample
         //   var userid=input.UserID;
@@ -179,20 +179,25 @@ exports.GetProperty = function(req, res){
 
         //  })
         //   }
-
           //Junaid Sample 
+          
+
+          var dbo = db.db("heroku_zn69xqhf");
           if(parseInt(input.Location)) {
             
              newValues = { 
                  Zip : input.Location , 
-                 Property_Type : input.Property_Type,
+                 Property_Type : input.Property_Type
                 // BHKType: input.BHKType,    ,{BHKType:newValues.BHKType}   {$and: [{Zip:newValues.Location},{Property_Type:newValues.Property_Type}]}
              };
              console.log(newValues.Zip);
+             console.log(typeof(newValues.Zip));
              console.log("Loop first")
-             var sort = { PropertyId: -1 };
-                dbo.collection('CLC_Property').find(newValues).sort(sort).toArray(function(err,result){
+             //var sort = { PropertyId: -1 };.sort(sort)
+                dbo.collection('CLC_Property').find({$or: [{Zip:newValues.Zip},
+                    {Property_Type:newValues.Property_Type}]}).toArray(function(err,result){
                     if (err) throw err;
+                    console.log(err);
                     console.log(result.length);
                     if(result.length>0){
                         //solution2=result;
@@ -207,58 +212,68 @@ exports.GetProperty = function(req, res){
            else {
              newValues = { 
                 Location : input.Location , 
-                 Property_Type : input.Property_Type,
+                 Property_Type : input.Property_Type
                 // BHKType: input.BHKType,   ,{BHKType:newValues.BHKType}  new RegExp(loc ,'i')
  
              };
-             var loc= newValues.Location;
-             
-             var sort = { PropertyId: -1 }; 
-      if((newValues.Location!=null &&newValues.Property_Type==null)||(newValues.Property_Type!=null&&newValues.Location==null ))
-            {
-                console.log(newValues.Property_Type)
-                console.log("Location condition")
-              dbo.collection('CLC_Property').find({$or: [{Location:newValues.Location},
-              {Property_Type:newValues.Property_Type}]}).sort(sort).toArray(function(err,result){
-                    if (err) throw err;
-                    console.log(err);
-                    console.log(result.length);
-                    if(result!=null){
-                        res.json({status : 'success', message : 'Property Records found', result : result});
-                        //solution2=result
-                       // db.close();
-                    }
-                    else{
-                        res.json({status : 'error', message : 'No records found', result : null});
-                        
-                    }
-                })
-            }
-            else{
-                console.log(newValues.Property_Type)
-                console.log("Location and property type condition")
-              dbo.collection('CLC_Property').find({$and: [{Location: new RegExp(loc ,'i')},
-              {Property_Type:newValues.Property_Type}]}).sort(sort).toArray(function(err,result){
-                    if (err) throw err;
-                    console.log(err);
-                    console.log(result.length);
-                    if(result!=null){
-                        res.json({status : 'success', message : 'Property Records found', result : result});
-                        //solution2=result
-                       // db.close();
-                    }
-                    else{
-                        res.json({status : 'error', message : 'No records found', result : null});
-                        
-                    }
-                })
-            }
+                console.log("Experiment");
+                LocationProperty(newValues,function(Locationresult,err,result){
+                    console.log("Experiment result");
+                    //console.log(Locationresult)
+                    res.json({status : 'success', message : 'Property Records found', result : Locationresult});
+                });
            }
         //    var fullsolution=[];
         //    fullsolution["solution1"]=solution1;
         //   // fullsolution["solution2"]=solution2;
         //    res.json({status:'success',message:'Record found',result:fullsolution});
     });
+}
+
+//This method is called for only location is passed as parameter
+function LocationProperty(newValues,callback){
+    var Locationresult;
+    var loc= newValues.Location;
+    MongoClient.connect(url, function(err, db){ 
+        var dbo = db.db("heroku_zn69xqhf");
+    if((newValues.Location!=null &&newValues.Property_Type==null)||(newValues.Property_Type!=null&&newValues.Location==null ))
+    {
+            var sort = { PropertyId: -1 }; 
+            
+        dbo.collection('CLC_Property').find({$or: [{Location:newValues.Location},
+            {Property_Type:newValues.Property_Type}]}).sort(sort).toArray(function(err,result){
+                if (err) throw err;
+                console.log(result.length);
+           Locationresult=result;
+         // console.log(Locationresult);
+          callback(Locationresult)
+            })
+      
+           
+        }
+        else{
+            console.log(newValues.Property_Type)
+                console.log("Location and property type condition")
+              dbo.collection('CLC_Property').find({$and: [{Location: new RegExp(loc ,'i')},
+              {Property_Type:newValues.Property_Type}]}).sort(sort).toArray(function(err,result){
+                    if (err) throw err;
+                    console.log(err);
+                    console.log(result.length);
+                    Locationresult=result;
+                     callback(Locationresult)
+                    // if(result!=null){
+                    //     res.json({status : 'success', message : 'Property Records found', result : result});
+                    //     //solution2=result
+                    //    // db.close();
+                    // }
+                    // else{
+                    //     res.json({status : 'error', message : 'No records found', result : null});
+                        
+                    // }
+                })
+        }
+    })
+
 }
 
 
