@@ -47,7 +47,7 @@ exports.getUsers = function(req, res){
            console.log(oldpath);
            filenamechange(files.UserProfileImage.name,function(newname){
                console.log(newname);
-               var newpath = './Profilepic' + newname;
+               var newpath = './ProfilePic' + newname;
                console.log(newpath);
                fs.rename(oldpath, newpath, function (err) {
                    console.log(newpath);
@@ -88,7 +88,7 @@ exports.getUsers = function(req, res){
 function filenamechange(oldname, callback){
     var arr = oldname.split('.');
     var extension = arr[arr.length-1];
-    var newname = 'profilepic_' + Date.now() + '.' + extension;
+    var newname = 'ProfilePic_' + Date.now() + '.' + extension;
     callback(newname);
 }
 
