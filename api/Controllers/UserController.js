@@ -79,12 +79,14 @@ exports.getUsers = function(req, res){
          })
     }
 
-function filenamechange(oldname, callback){
-    var arr = oldname.split('.');
-    var extension = arr[arr.length-1];
-    var newname = 'ProfilePic_' + Date.now() + '.' + extension;
-    callback(newname);
-}
+    function filenamechange(oldname, callback){
+        v//ar arr = oldname.split('.');
+        var type=oldname.type;
+        var ext = type.split("/");
+        var newname =  "profile_"+ Date.now() +'.'+ ext[1];
+        callback(newname);
+    }
+    
 
     exports.UserValidate=function(req, res){
         var input = req.body;
