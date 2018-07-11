@@ -9,6 +9,7 @@ var fs = require('fs');
 var async = require('async');
 var crypto = require('crypto');
 var nodemailer = require("nodemailer");
+var path = require('path');
 
 //sample
 
@@ -34,7 +35,7 @@ exports.getUsers = function(req, res){
     });
 }
 
-  // User Registration
+  // User Registration  /api/ProfilePic/
   exports.signUp = function(req, res){
       console.log("welcome");
     
@@ -47,7 +48,7 @@ exports.getUsers = function(req, res){
            console.log(oldpath);
            filenamechange(files.UserProfileImage.name,function(newname){
                console.log(newname);
-               var newpath = '/api/ProfilePic/' + newname;
+               var newpath =   '/ProfilePic' + newname;
                console.log(newpath);
                fs.rename(oldpath, newpath, function (err) {
                    console.log(newpath);
