@@ -1,6 +1,6 @@
 var express = require('express'),
     app = express(),
-   // port = process.env.PORT || 3000,
+    port = process.env.PORT || 3000,
     bodyParser = require('body-parser');
 
 
@@ -22,11 +22,11 @@ app.get("/", function (req, res) {
 var routes = require('./api/routers/routers');
 routes(app);
 
-// app.listen(port);
+ app.listen(port);
 
-// console.log('Test RESTful API server started on: ' + port); //comment
+console.log('Test RESTful API server started on: ' + port); //comment
 
-var server=app.listen(process.env.PORT || 3000, function () {
-    var port = server.address().port;
-    console.log("Express is working on port " + port);
-  });
+// var server=app.listen(process.env.PORT || 3000, function () {
+//     var port = server.address().port;
+//     console.log("Express is working on port " + port);
+//   });
